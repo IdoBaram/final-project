@@ -26,7 +26,6 @@ resource "aws_instance" "monitoring" {
   vpc_security_group_ids      = [aws_security_group.monitor_sg.id, aws_security_group.internal.id]
   key_name                    = local.aws_key_pair
   iam_instance_profile        = local.iam_instance_profile
-  # user_data                   = file("monitor.sh")
 
   tags = {
     Name          = "Monitoring"
@@ -45,7 +44,6 @@ resource "aws_instance" "elk" {
   vpc_security_group_ids      = [aws_security_group.elk.id, aws_security_group.internal.id]
   key_name                    = local.aws_key_pair
   iam_instance_profile        = local.iam_instance_profile
-  # user_data                   = file("consul_node.sh")
 
   tags = {
     Name          = "ELK"
@@ -64,7 +62,6 @@ resource "aws_instance" "mysql" {
   vpc_security_group_ids      = [aws_security_group.mysql.id, aws_security_group.internal.id]
   key_name                    = local.aws_key_pair
   iam_instance_profile        = local.iam_instance_profile
-  # user_data                   = file("consul_node.sh")
 
   tags = {
     Name          = "mysql"

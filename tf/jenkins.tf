@@ -23,7 +23,7 @@ resource "aws_instance" "jenkins_agent" {
   instance_type          = var.instance_type
   key_name               = local.aws_key_pair
   vpc_security_group_ids = [aws_security_group.jenkins-sg.id, aws_security_group.internal.id]
-  iam_instance_profile   = "mid_project_automation"
+  iam_instance_profile   = "Jenkins-agent"
   
   tags = {
     Name = "Jenkins Agent ${count.index+1}"
