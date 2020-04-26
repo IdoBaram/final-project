@@ -1,6 +1,7 @@
 # final-project
 Thie project builds a small prod like environment, which includes these componenets:
-- Jenkins server
+- Jenkins master server
+- Jenknis agents
 - Consul master cluster
 - Promethues and Grafana services
 - Elasticsearch services
@@ -31,6 +32,11 @@ In order to install consul for K8s run:
 $ cd ..
 $ ./consul helm.sh
 ```
+
+As soon as you will have that, you will need to:
+- Manually create the pipeline in the jenkins master
+- Configure the right credentials (DockerHub,GitHub) 
+- Set the jenkins agent connection.
 
 ## destroying the project:
 In order to delete all the componenets created by this project, ececute this command:
