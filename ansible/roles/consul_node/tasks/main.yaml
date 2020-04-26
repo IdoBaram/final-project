@@ -1,0 +1,24 @@
+- name: Recursively remove directory
+  file:
+    path: /home/ubuntu/consul/
+    state: absent
+
+- git:
+    repo: 'https://github.com/IdoBaram/final-project-sh.git'
+    dest: /home/ubuntu/consul/
+
+- name: Change file ownership, group and permissions
+  file:
+    path: /home/ubuntu/consul/install_consul.sh
+    mode: '+x'
+
+- name: install consul.sh
+  shell: bash /home/ubuntu/consul/install_consul.sh
+
+- name: Change file ownership, group and permissions
+  file:
+    path: /home/ubuntu/consul/inst_node_exporter.sh
+    mode: '+x'
+
+- name: install consul.sh
+  shell: bash /home/ubuntu/consul/inst_node_exporter.sh

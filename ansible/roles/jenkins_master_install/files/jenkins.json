@@ -1,0 +1,18 @@
+{
+  "services": [
+    {
+      "id": "grafana",
+      "name": "grafana",
+      "port": 8080,
+	  "tags": ["grafana"],
+      "checks": [
+        {
+        "name": "grafana on port 8080",
+		"tcp": "localhost:8080",
+        "interval": "5s",
+        "timeout": "20s"
+        }
+      ]
+    }
+  ]
+}

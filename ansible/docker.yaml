@@ -1,0 +1,24 @@
+# - hosts: jenkins-master, monitoring, jenkins-slaves, mysql, elk
+#   become: true
+#   roles:
+#     - consul_node
+
+- hosts: monitoring
+  become: true
+  roles:
+    - monitoring
+
+- hosts: elk
+  become: true
+  roles:
+    - elk
+
+# - hosts: jenkins-master
+#   become: true
+#   roles:
+#     - jenkins_master_install
+
+# - hosts: jenkins-slaves
+#   become: true
+#   roles:
+#     - jenkins_slaves_install

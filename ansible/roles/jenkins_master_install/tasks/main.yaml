@@ -1,0 +1,57 @@
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name=docker-ce state=latest
+
+- name: Add users to docker group.
+  become: true
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  with_items: "{{ docker_group_user }}"
+  
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+- name: Pull default Docker image
+  docker_image:
+    name: "idobaram/mid-course-cicd:latest"
+    source: pull
+
+- name: Create default containers
+  docker_container:
+    name: "jenkins-cicd"
+    image: "idobaram/mid-course-cicd:latest"
+    exposed_ports: 8080,5000
+    published_ports:
+      - "8080:8080"
+      - "5000:5000"
+    state: started
+
+- name: Copy jenkins.json
+  copy:
+    src: ../files/jenkins.json
+    dest: /etc/consul.d/jenkins.json
+
+- name: restart consul service and deaemon reload
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: consul   

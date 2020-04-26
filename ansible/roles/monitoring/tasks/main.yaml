@@ -1,0 +1,88 @@
+- name:  Install apt packages
+  become: true
+  apt:
+    name: ['apt-transport-https','ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python-pip']
+    state: present
+    update_cache: yes
+    
+    
+- name: Add Docker’s official GPG key  
+  become: true
+  apt_key:
+      id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+      url: "https://download.docker.com/linux/ubuntu/gpg"
+      state: present
+  
+  
+- name: Download and create repo
+  apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu  "{{ dist_release }}" stable
+      state: present
+  become: true
+  become_method: sudo
+  
+  
+- name: Install Docker Engine
+  become: true
+  apt:
+    name: ['docker-ce', 'docker-ce-cli', 'docker-ce-cli']
+    state: present
+    update_cache: yes
+  register: docker_engine
+  
+  
+- name: Restart the docker service
+  become: true
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+  when: docker_engine.changed
+  
+- name: Create docker group
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: Install Docker Compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.24.1/docker-compose-Linux-x86_64
+    dest: "/usr/local/bin/docker-compose"
+    mode: '+x'
+
+- name: create /etc/systemd/system/docker.service.d directory
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode : '+x'
+
+- name: Copy docker.root.conf into /etc/systemd/system/docker.service.d
+  copy:
+    src: ../files/docker.root.conf
+    dest: /etc/systemd/system/docker.service.d/docker.root.conf
+    
+- name: restart docker service and deaemon reload
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+    
+- name: Download monitoring git repo
+  git:
+    repo: 'https://github.com/IdoBaram/opsschool-monitoring.git'
+    dest: /home/ubuntu/monitor/
+
+- name: Copy monitoring.json
+  copy:
+    src: ../files/monitoring.json
+    dest: /etc/consul.d/monitoring.json
+
+- name: docker-compose up
+  shell: cd /home/ubuntu/monitor/compose && sudo docker-compose up -d 
+
+- name: restart consul service and deaemon reload
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: consul   

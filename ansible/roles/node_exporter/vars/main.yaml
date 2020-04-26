@@ -1,0 +1,4 @@
+---
+# vars file for roles/docker_installer
+dist_release: "{{ ansible_distribution_release }}"
+docker_group_user: ['ubuntu']

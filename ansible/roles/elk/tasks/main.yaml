@@ -1,0 +1,11 @@
+- name: Change file ownership, group and permissions
+  file:
+    path: /home/ubuntu/consul/elk/bootstrap_elk.sh
+    mode: '+x'
+
+- name: install elk
+  shell: bash /home/ubuntu/consul/elk/bootstrap_elk.sh
+  ignore_errors: yes
+
+- name: install elk
+  shell: bash /home/ubuntu/consul/elk/bootstrap_elk.sh
